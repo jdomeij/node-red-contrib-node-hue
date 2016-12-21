@@ -1,0 +1,33 @@
+<script type="text/x-red" data-template-name="node-hue-server">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="icon-server"></i> Name</label>
+        <input type="text" id="node-config-input-name">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-network"><i class="icon-feed"></i> Host</label>
+        <input type="text" id="node-config-input-network">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-key"><i class="icon-key"></i> API key</label>
+        <input type="text" id="node-config-input-key">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-interval"><i class="icon-key"></i> Poll interval</label>
+        <input type="text" id="node-config-input-interval">
+    </div>
+</script>
+
+<script type="text/javascript">
+RED.nodes.registerType('node-hue-server',{
+  category: 'config',
+  defaults: {
+    name:    { value: 'Server 1',  require: true },
+    network: { value: 'localhost', required:true },
+    key:     { value: '',          required:true },
+    interval:{ value: 1000,        required:true, validate: function(v) { return (/^[0-9]+/.test(v) && parseInt(v,10) >= 500); } },
+  },
+  label: function() {
+    return this.name;
+  }
+});
+</script>

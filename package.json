@@ -1,0 +1,29 @@
+{
+  "name": "node-red-contrib-node-hue",
+  "version": "0.1.0",
+  "description": "Send/receive data from Philips HUE lights.",
+  "repository": {},
+  "keywords": [
+    "node-red",
+    "node-red-contrib",
+    "contrib",
+    "hue"
+  ],
+  "node-red": {
+    "nodes": {
+      "node-hue-out": "lib/hue-output.js",
+      "node-hue-in": "lib/hue-input.js",
+      "node-hue-server": "lib/hue-server.js"
+    }
+  },
+  "author": "stampe123",
+  "license": "MIT",
+  "homepage": "",
+  "devDependencies": {},
+  "dependencies": {
+    "color-convert": "^1.8.2",
+    "color-space": "^1.14.7",
+    "color-temp": "0.0.2",
+    "node-hue-api": "^2.3.0"
+  }
+}

@@ -1,0 +1,55 @@
+<script type="text/x-red" data-template-name="node-hue-in">
+  <div class="form-row">
+    <label for="node-input-server"><i class="fa fa-tag"></i> HUE server</label>
+    <input type="text" id="node-input-server" placeholder="Server">
+  </div>
+  <br/>
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <br/>
+  <div class="form-row">
+    <label for="node-input-lightID"><i class="fa fa-tag"></i> Light ID</label>
+    <input type="text" id="node-input-lightID" placeholder="ID/Label">
+  </div>
+</script>
+
+
+<script type="text/x-red" data-help-name="node-hue-in">
+  <p>Change state for HUE light bulb.</p>
+  <p>Inputs for Dimmable light</p>
+  <ul>
+  <li><code>on</code> On/Off boolean</li>
+  <li><code>bri</code> Brightness number (1-255)</li>
+  <li><code>delay</code> Transition time (ms)</li>
+  </ul>
+  <br>
+  <p>Inputs for White Ambiance light</p>
+  <ul>
+  <li><code>on</code> On/Off boolean</li>
+  <li><code>bri</code> Brightness number (1-255)</li>
+  <li><code>ct</code> Mired/Mirek temperature color (153-454)</li>
+  <li><code>kelvin</code> Kelvin temperature color (2200-6500)</li>
+  <li><code>delay</code> Transition time (ms)</li>
+  </ul>
+</script>
+
+<script type="text/javascript">
+  RED.nodes.registerType('node-hue-in',{
+    category: 'output',
+    defaults: {
+      server:     {value: "", require: true, type:"node-hue-server"},
+      name:       {value: "" },
+      lightID:    {value: "", required:true },
+    },
+    color:   "#5d9ef9",
+    inputs:  1,
+    outputs: 0,
+
+    icon: "light.png",
+    label: function() {
+      return this.name || "Hue light";
+    },
+  });
+</script>

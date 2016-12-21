@@ -1,0 +1,40 @@
+<script type="text/x-red" data-template-name="node-hue-out">
+  <div class="form-row">
+    <label for="node-input-server"><i class="fa fa-tag"></i> HUE server</label>
+    <input type="text" id="node-input-server" placeholder="Server">
+  </div>
+  <br/>
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <br/>
+  <div class="form-row">
+    <label for="node-input-lightID"><i class="fa fa-tag"></i> Light ID</label>
+    <input type="text" id="node-input-lightID" placeholder="ID/Label">
+  </div>
+</script>
+
+
+<script type="text/x-red" data-help-name="node-hue-out">
+  <p>Trigger on Light changes for HUE light bulbs.</p>
+</script>
+
+<script type="text/javascript">
+  RED.nodes.registerType('node-hue-out',{
+    category: 'input',
+    defaults: {
+      server:     {value: "", require: true, type:"node-hue-server"},
+      name:       {value: ""},
+      lightID:    {value: "", required:true},
+    },
+    color:   "#5d9ef9",
+    inputs:  0,
+    outputs: 1,
+
+    icon: "light.png",
+    label: function() {
+      return this.name || "Hue light";
+    },
+  });
+</script>
