@@ -11,6 +11,7 @@ This module provides input and output nodes for communicating with Philips Hue l
 
 ### Input node
 The following input values is accepted
+
 | Property | Value |
 |---|---|
 | `on` | Set light state (true/false)|
