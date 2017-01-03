@@ -1,32 +1,56 @@
 <script type="text/x-red" data-template-name="node-hue-out">
   <div class="form-row">
-    <label for="node-input-server"><i class="fa fa-tag"></i> HUE server</label>
+    <label for="node-input-server"><i class="fa fa-globe"></i> Lifx server</label>
     <input type="text" id="node-input-server" placeholder="Server">
   </div>
-  <br/>
+  <div class="form-row" style="white-space: nowrap;">
+    <label for="node-input-lightID"><i class="fa fa-lightbulb-o"></i> Light ID</label>
+    <div style="display: inline-block; position: relative; width: 70%; height: 20px;">
+      <div style="position: absolute; left: 0px; right: 40px;">
+        <input type="text" id="node-input-lightID" placeholder="ID/Label" style="width: 100%;">
+      </div>
+      <a id="node-input-lookup-lights" class="editor-button" style="position: absolute; right: 0px; top: 0px;"><i class="fa fa-search"></i></a>
+    </div>
+  </div>
   <div class="form-row">
     <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
     <input type="text" id="node-input-name" placeholder="Name">
-  </div>
-  <br/>
-  <div class="form-row">
-    <label for="node-input-lightID"><i class="fa fa-tag"></i> Light ID</label>
-    <input type="text" id="node-input-lightID" placeholder="ID/Label">
   </div>
 </script>
 
 
 <script type="text/x-red" data-help-name="node-hue-out">
-  <p>Trigger on Light changes for HUE light bulbs.</p>
+  <p>Trigger event on light changes, contains information for the new state.</p>
+  <p> The following information will be returned on light changes</p>
+  <ul>
+  <li><code>on</code> On/Off boolean</li>
+  <li><code>reachable</code> Online/Offline status</li>
+  <li><code>mode</code> Brightness, Color or Temperature representing the current working mode for the light</li>
+
+  <li><code>bri</code>/<code>brightness</code> Brightness value (0-100%)</li>
+
+  <li><code>hsv</code> Current color represented in <b>HSV</b> array</li>
+  <li><code>rgb</code> Current color represented in <b>RGB</b> array</li>
+
+  <li><code>kelvin</code> Color temperature</li>
+  <li><code>mirek</code> Color temperature</li>
+
+  <li><code>hex</code> Current color as hex value</li>
+  <li><code>color</code> Closest color name for current color</li>
+  </ul>
 </script>
 
+
 <script type="text/javascript">
+/* eslint require-jsdoc: 0 */
+/* eslint-env jquery */
+
   RED.nodes.registerType('node-hue-out',{
     category: 'input',
     defaults: {
-      server:     {value: "", require: true, type:"node-hue-server"},
-      name:       {value: ""},
-      lightID:    {value: "", required:true},
+      server:     {value: "", required: true, type:"node-hue-bridge"},
+      name:       {value: "", required: false },
+      lightID:    {value: "", required: true},
     },
     color:   "#5d9ef9",
     inputs:  0,
@@ -36,5 +60,70 @@
     label: function() {
       return this.name || "Hue light";
     },
+    oneditprepare: function() {
+      var htmlID    = '#node-input-lightID';
+      var htmlText  = '<input type="text" id="node-input-lightID" placeholder="Light ID" style="width: 100%;">';
+      var htmlCombo = '<select            id="node-input-lightID" placeholder="Light ID" style="width: 100%;"/>'; 
+
+      function enableCombobox() {
+        var val = $(htmlID).val();
+
+        var serverConfig = RED.nodes.node($('#node-input-server').val());
+        if (serverConfig && serverConfig.id) {
+          $.getJSON('node-hue/lights', { server: serverConfig.id } )
+            .done(function(data) {
+              // No data returned
+              if(!data || data.length <= 0) {
+                RED.notify("No lights found", "error");
+                return;
+              }
+
+              // If we have value check if it exists in the response
+              if (typeof val === 'string' && val.length && data.find(function(light) { return (light.id === val); }) === undefined) {
+                RED.notify('No matching light found', 'warning');
+                return;
+              }
+
+              // Convert to select
+              $('#node-input-lookup-lights > i').toggleClass('fa-search', false).toggleClass('fa-edit', true);
+              $(htmlID).replaceWith(htmlCombo);
+
+              // Add option
+              var input = $(htmlID);
+              data.forEach(function(light) {
+               input.append($('<option>').val(light.id).text(
+                  (light.name || light.id ) + 
+                  (light.info ? (' (' + light.info + ')'):'')
+                ));
+              });
+
+              // Mark current value
+              input.val(val);
+            })
+            .fail(function(err) {
+              RED.notify(err.responseText, "error");
+            });
+        }
+      }
+
+      function enableTextbox() {
+        var val = $(htmlID).val();
+
+        // Convert to text
+        $('#node-input-lookup-lights > i').toggleClass('fa-search', true).toggleClass('fa-edit', false);
+        $(htmlID).replaceWith(htmlText);
+
+        // Insert current value
+        $(htmlID).val(val);
+      }
+
+      $('#node-input-lookup-lights').click( function() {
+        if ($(htmlID).attr('type') === 'text') {
+          enableCombobox();
+        } else {
+          enableTextbox();
+        }
+      });
+    }
   });
 </script>
