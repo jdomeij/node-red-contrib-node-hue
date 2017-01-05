@@ -10,7 +10,6 @@ This module provides input and output nodes for communicating with Philips Hue l
 * Displays current state for light in Node-Red ui
 
 ### Input node
-The following input values is accepted
 
 | Property | Value |
 |---|---|
@@ -19,6 +18,19 @@ The following input values is accepted
 | `cr`, `mired` or `mirek` | Set Mired color temperature (153 - 500) |
 | `kelvin` | Set kelvin color temperature (2200-6500) |
 | `duration` | Transition time (ms) |
+
+
+Example: Sending the following to the light will turn it on and dimm it upp to 77% over 10 seconds
+
+```json
+{
+  "payload": {
+    "on": true, 
+    "bri": 77,
+    "duration": 10000
+  }
+}
+```
 
 ### Output node
 
