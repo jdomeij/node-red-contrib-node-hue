@@ -6,7 +6,7 @@ This module provides input and output nodes for communicating with Philips Hue l
 ### Features
 * Convert input arguments to light specific arguments
 * Trigger events for light changes
-* Uses background polling to detect external changes to light
+* Self syncing, uses background polling to detect external changes to light
 * Displays current state for light in Node-Red ui
 
 ### Input node
@@ -38,6 +38,7 @@ Example output from change event
     "mired": 401, 
     "kelvin": 2493
   },
+  ...
 }
 ```
 
