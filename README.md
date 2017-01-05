@@ -10,6 +10,7 @@ This module provides input and output nodes for communicating with Philips Hue l
 * Displays current state for light in Node-Red ui
 
 ### Input node
+The light is controlled by sending message with an payload containing one or more of the following properties to the light
 
 | Property | Value |
 |---|---|
@@ -20,7 +21,7 @@ This module provides input and output nodes for communicating with Philips Hue l
 | `duration` | Transition time (ms) |
 
 
-Example: Sending the following to the light will turn it on and dimm it upp to 77% over 10 seconds
+Example: Sending the following to the light will turn it on and dim it upp to 77% over 10 seconds
 
 ```json
 {
