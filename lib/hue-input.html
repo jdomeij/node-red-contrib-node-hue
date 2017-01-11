@@ -50,7 +50,7 @@
 
     icon: "light.png",
     label: function() {
-      return this.name || "Hue light";
+      return this.name || this.lightID || "Hue light";
     },
     oneditprepare: function() {
       var htmlID    = '#node-input-lightID';
@@ -58,21 +58,20 @@
       var htmlCombo = '<select            id="node-input-lightID" placeholder="Light ID" style="width: 100%;"/>'; 
 
       function enableCombobox() {
+                    
         var val = $(htmlID).val();
 
         var serverConfig = RED.nodes.node($('#node-input-server').val());
         if (serverConfig && serverConfig.id) {
           $.getJSON('node-hue/lights', { server: serverConfig.id } )
             .done(function(data) {
-              // No data returned
-              if(!data || data.length <= 0) {
-                RED.notify("No lights found", "error");
-                return;
-              }
+              function findFunc(light) { return (light.id === val);}
+              function sortFunc(a, b) { return (a.name || a.id).localeCompare((b.name || b.id)); }
 
-              // If we have value check if it exists in the response
-              if (typeof val === 'string' && val.length && data.find(function(light) { return (light.id === val); }) === undefined) {
-                RED.notify('No matching light found', 'warning');
+              // No data returned
+              if (data == null || data.lights == null || data.groups == null || 
+                  (data.lights.length === 0 && data.groups.length === 0)) {
+                RED.notify("No lights found", "error");
                 return;
               }
 
@@ -80,16 +79,43 @@
               $('#node-input-lookup-lights > i').toggleClass('fa-search', false).toggleClass('fa-edit', true);
               $(htmlID).replaceWith(htmlCombo);
 
+              data.lights = data.lights.sort(sortFunc);
+              data.groups = data.groups.sort(sortFunc);
+
               // Add option
               var input = $(htmlID);
-              data.forEach(function(light) {
-                input.append($('<option>').val(light.id).text(
-                  (light.name || light.id ) + 
-                  (light.info ? (' (' + light.info + ')'):'')
-                ));
-              });
+              var optGroup;
 
-              // Mark current value
+              function formatLightOption(lightInfo) {
+                return $('<option/>').val(lightInfo.id).text(
+                  (lightInfo.hueID + ': ' + (lightInfo.name || lightInfo.id) )
+                );
+              }
+
+              // Add lights
+              optGroup = $('<optgroup label="Lights"></optgroup>');
+              input.append(optGroup);
+              data.lights.reduce(function(parent, light) {
+                parent.append(formatLightOption(light));
+                return parent;
+              }, optGroup);
+
+              // Add groups
+              optGroup = $('<optgroup label="Groups"></optgroup>');
+              input.append(optGroup);
+              data.groups.reduce(function(parent, light) {
+                parent.append(formatLightOption(light));
+                return parent;
+              }, optGroup);
+
+              // Do we have an value, check if value match any existing and if not add it as unknown entry
+              if (typeof val === 'string' && val.length &&
+                  data.lights.find(findFunc) === undefined && 
+                  data.groups.find(findFunc) === undefined) { 
+                input.prepend($('<option/>').val(val).text('Unknown "'+val+'"'));
+              }
+
+              // Select current value
               input.val(val);
             })
             .fail(function(err) {
