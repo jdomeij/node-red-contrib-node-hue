@@ -29,6 +29,6 @@
         "ArrowFunctionExpression": false
       }
     } ],
-    "no-trailing-spaces": ["error", { "skipBlankLines": true }]
+    "no-trailing-spaces": [1, { "skipBlankLines": true }]
   }
 }

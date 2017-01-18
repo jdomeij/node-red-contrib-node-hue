@@ -1,11 +1,25 @@
 <script type="text/x-red" data-template-name="node-hue-bridge">
-  <div class="form-row">
+  <div class="form-row" style="white-space: nowrap;">
     <label for="node-config-input-address"><i class="fa fa-globe"></i> Host</label>
-    <input type="text" id="node-config-input-address">
+    <div style="display: inline-block; position: relative; width: 70%; height: 20px;">
+      <div style="position: absolute; left: 0px; right: 40px;">
+        <input type="text" id="node-config-input-address" placeholder="Address" style="width: 100%;">
+      </div>
+      <a id="node-input-lookup-address" title="Search for Hubs" class="editor-button" style="position: absolute; right: 0px; top: 0px;">
+        <i class="fa fa-search"></i>
+      </a>
+    </div>
   </div>
-  <div class="form-row">
+  <div class="form-row" style="white-space: nowrap;">
     <label for="node-config-input-key"><i class="fa fa-key"></i> API key</label>
-    <input type="text" id="node-config-input-key">
+    <div style="display: inline-block; position: relative; width: 70%; height: 20px;">
+      <div style="position: absolute; left: 0px; right: 40px;">
+        <input type="text" id="node-config-input-key" placeholder="API Key" style="width: 100%;">
+      </div>
+      <a id="node-input-lookup-key" title="Get/Test API key" class="editor-button" style="position: absolute; right: 0px; top: 0px;">
+        <i class="fa fa-user-o"></i>
+      </a>
+    </div>
   </div>
   <div class="form-row">
     <label for="node-config-input-interval"><i class="fa fa-clock-o"></i> Poll interval</label>
@@ -21,29 +35,131 @@
   <p>Server managing communication with Philips Hue bridge.</p>
   <ul>
     <li><b>address</b> Hue bridge address</li>
-    <li><b>key</b> Hue bridge API key</li>
+    <li><b>key</b> Hue bridge authorization key</li>
     <li><b>interval</b> Interval that is used to poll lights for changes (min 500ms)</li>
     <li><b>name</b> Server name</li>
   </ul>
 </script>
 
 <script type="text/javascript">
-RED.nodes.registerType('node-hue-bridge',{
-  category: 'config',
-  defaults: {
-    name:    { value: 'Hue Bridge',  required: true },
-    address: { value: null,          required: true },
-    key:     { value: null,          required: true },
-    interval: { 
-      value: 10000,
-      required: true,
-      validate: function(v) { 
-        return (/^[0-9]+/.test(v) && parseInt(v,10) >= 500); 
+/* eslint require-jsdoc: 0 */
+/* eslint-env jquery */
+
+  RED.nodes.registerType('node-hue-bridge',{
+    category: 'config',
+    defaults: {
+      name:    { value: 'Hue Bridge',  required: true },
+      address: { value: null,          required: true },
+      key:     { value: null,          required: true },
+      interval: {
+        value: 10000,
+        required: true,
+        validate: function(v) {
+          return (/^[0-9]+/.test(v) && parseInt(v,10) >= 500);
+        },
       },
     },
-  },
-  label: function() {
-    return this.name;
-  }
-});
+    label: function() {
+      return this.name;
+    },
+    oneditprepare: function() {
+      var htmlAddressID    = '#node-config-input-address';
+      var htmlAddressText  = '<input type="text" id="node-config-input-address" placeholder="Address" style="width: 100%;">';
+      var htmlAddressCombo = '<select            id="node-config-input-address" placeholder="Address" style="width: 100%;"/>';
+
+      // Convert to combobox
+      function enableAddressCombobox() {
+        var val = $(htmlAddressID).val();
+
+        $.getJSON('node-hue/nupnp')
+          .done(function(serverList) {
+            function findFunc(server) { return (server.ipaddress === val);}
+
+            // No data returned
+            if (serverList == null || serverList.length === 0) {
+              RED.notify("No Hue Bridge found", "error");
+              return;
+            }
+
+            // Convert to select
+            $('#node-input-lookup-address > i').toggleClass('fa-search', false).toggleClass('fa-edit', true);
+            $(htmlAddressID).replaceWith(htmlAddressCombo);
+
+            // Add option
+            var input = $(htmlAddressID);
+
+            // Add servers
+            serverList.forEach(function(server) {
+              input.append($('<option/>').val(server.ipaddress).text(
+                server.name ? (server.name + '(' + server.ipaddress + ')') : server.ipaddress
+              ));
+            });
+
+            // Do we have an value, check if value match any existing and if not add it as unknown entry
+            if (typeof val === 'string' && val.length && serverList.find(findFunc) === undefined) {
+              input.prepend($('<option/>').val(val).text('Unknown "'+val+'"'));
+            }
+
+            // Select current value
+            input.val(val);
+          })
+          .fail(function(err) {
+            RED.notify(err.responseText, "error");
+          });
+      }
+
+      // Convert to textbox
+      function enableAddressTextbox() {
+        var val = $(htmlAddressID).val();
+
+        // Convert to text
+        $('#node-input-lookup-address > i').toggleClass('fa-search', true).toggleClass('fa-edit', false);
+        $(htmlAddressID).replaceWith(htmlAddressText);
+
+        // Insert current value
+        $(htmlAddressID).val(val);
+      }
+
+      // Switch between combobox and textbox
+      $('#node-input-lookup-address').click( function() {
+        if ($(htmlAddressID).attr('type') === 'text') {
+          enableAddressCombobox();
+        } else {
+          enableAddressTextbox();
+        }
+      });
+
+
+      // Get/Validate API key
+      $('#node-input-lookup-key').click( function() {
+        var address = $('#node-config-input-address').val();
+        if (!address || address.length === 0) {
+          return RED.notify("Missing bridge address", "error");
+        }
+
+        var key = $('#node-config-input-key').val();
+
+        // Test key
+        if (key) {
+          $.getJSON('node-hue/validate_key', { 'address': address, 'key': key })
+          .done(function() {
+            RED.notify('Valid bridge authorization key', 'notice');
+          })
+          .fail(function(err) {
+            RED.notify(err.responseText, "error");
+          });
+          return;
+        }
+
+        // Register
+        $.getJSON('node-hue/register', { 'address': address })
+        .done(function(data) {
+          $('#node-config-input-key').val(data);
+        })
+        .fail(function(err) {
+          RED.notify(err.responseText, "error");
+        });
+      });
+    }
+  });
 </script>

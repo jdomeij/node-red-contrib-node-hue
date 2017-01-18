@@ -9,7 +9,9 @@
       <div style="position: absolute; left: 0px; right: 40px;">
         <input type="text" id="node-input-lightID" placeholder="ID/Label" style="width: 100%;">
       </div>
-      <a id="node-input-lookup-lights" class="editor-button" style="position: absolute; right: 0px; top: 0px;"><i class="fa fa-search"></i></a>
+      <a id="node-input-lookup-lights" class="editor-button" style="position: absolute; right: 0px; top: 0px;">
+        <i class="fa fa-search"></i>
+      </a>
     </div>
   </div>
   <div class="form-row">
@@ -63,7 +65,7 @@
     oneditprepare: function() {
       var htmlID    = '#node-input-lightID';
       var htmlText  = '<input type="text" id="node-input-lightID" placeholder="Light ID" style="width: 100%;">';
-      var htmlCombo = '<select            id="node-input-lightID" placeholder="Light ID" style="width: 100%;"/>'; 
+      var htmlCombo = '<select            id="node-input-lightID" placeholder="Light ID" style="width: 100%;"/>';
 
       function enableCombobox() {
                     
@@ -77,7 +79,7 @@
               function sortFunc(a, b) { return (a.hueID).localeCompare((b.hueID), { numeric: true}); }
 
               // No data returned
-              if (data == null || data.lights == null || data.groups == null || 
+              if (data == null || data.lights == null || data.groups == null ||
                   (data.lights.length === 0 && data.groups.length === 0)) {
                 RED.notify("No lights found", "error");
                 return;
@@ -117,8 +119,8 @@
 
               // Do we have an value, check if value match any existing and if not add it as unknown entry
               if (typeof val === 'string' && val.length &&
-                  data.lights.find(findFunc) === undefined && 
-                  data.groups.find(findFunc) === undefined) { 
+                  data.lights.find(findFunc) === undefined &&
+                  data.groups.find(findFunc) === undefined) {
                 input.prepend($('<option/>').val(val).text('Unknown "'+val+'"'));
               }
 
