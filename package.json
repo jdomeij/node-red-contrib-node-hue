@@ -1,7 +1,7 @@
 {
   "name": "node-red-contrib-node-hue",
-  "version": "0.6.0",
-  "description": "Control Philips HUE lights.",
+  "version": "0.8.0",
+  "description": "Node-Red control system for Philips HUE lights.",
   "repository": {},
   "keywords": [
     "node-red",
@@ -11,14 +11,15 @@
   ],
   "node-red": {
     "nodes": {
-      "node-hue-out": "lib/hue-output.js",
-      "node-hue-in": "lib/hue-input.js",
-      "node-hue-server": "lib/hue-server.js"
+      "node-hue-out": "red/hue-output.js",
+      "node-hue-in": "red/hue-input.js",
+      "node-hue-bridge": "red/hue-bridge.js"
     }
   },
+  "main": "lib/hue-server.js",
   "author": "stampe123",
-  "license": "MIT",
-  "homepage": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/stampe123/node-red-contrib-node-hue",
   "devDependencies": {},
   "dependencies": {
     "color-convert": "^1.8.2",
