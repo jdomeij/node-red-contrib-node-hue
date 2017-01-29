@@ -10,6 +10,9 @@ This module provides input and output nodes for communicating with Philips Hue l
 * Self syncing, uses background polling to detect external changes to light
 * Displays current state for light in the Node-Red ui
 
+#### TODO
+* The HSV to XY (and back) color conversion is not 100% correct, modifying only one color channel at a time does not produce correct result.
+
 ### Examples
 ##### Dashboard example config:
 This is an example of how to control the light using the [node-red-dashboard](https://github.com/node-red/node-red-dashboard)
@@ -104,9 +107,6 @@ Example output from change event
   "event": "change"
 }
 ```
-
-#### TODO
-* Support color lights, need to verify current implementation
 
 
 # Using withouth Node-RED
