@@ -1,6 +1,6 @@
 <script type="text/x-red" data-template-name="node-hue-out">
   <div class="form-row">
-    <label for="node-input-server"><i class="fa fa-globe"></i> Lifx server</label>
+    <label for="node-input-server"><i class="fa fa-globe"></i> Hue bridge</label>
     <input type="text" id="node-input-server" placeholder="Server">
   </div>
   <div class="form-row" style="white-space: nowrap;">
@@ -27,10 +27,11 @@
   <ul>
     <li><code>on</code> On/Off boolean</li>
     <li><code>reachable</code> Online/Offline status</li>
-    <li><code>mode</code> Brightness, Color or Temperature representing the current working mode for the light</li>
+    <li><code>mode</code> 'bri', 'ct', 'hs' or 'xy' representing the current working mode for the light</li>
 
     <li><code>bri</code>/<code>brightness</code> Brightness value (0-100%)</li>
 
+    <li><code>xy</code> Current color represented in <b>XY</b> array</li>
     <li><code>hsv</code> Current color represented in <b>HSV</b> array</li>
     <li><code>rgb</code> Current color represented in <b>RGB</b> array</li>
 
@@ -50,9 +51,14 @@
   RED.nodes.registerType('node-hue-out',{
     category: 'input',
     defaults: {
-      server:     {value: "", required: true, type:"node-hue-bridge"},
-      name:       {value: "", required: false },
-      lightID:    {value: "", required: true},
+      server: { require: true, type:"node-hue-bridge"},
+      lightID: {
+        require: true,
+        validate: function(v) {
+          return (/^(group|light)[0-9]+/.test(v));
+        },
+      },
+      name:   { require: false },
     },
     color:   "#5d9ef9",
     inputs:  0,

@@ -28,7 +28,12 @@ module.exports = function(RED) {
     };
 
     // Create server
-    this.lightServer = new LightServer(config);
+    try {
+      this.lightServer = new LightServer(config);
+    } catch (e) {
+      self.error(e.message, e.stack);
+      return;
+    }
   
     // Create wrapper functions
     this.getLightHandler = this.lightServer.getLightHandler.bind(this.lightServer);
@@ -44,7 +49,7 @@ module.exports = function(RED) {
 
     // Server errors
     this.lightServer.on('error', (msg, obj) => {
-      self.err(msg, obj);
+      self.error(msg, obj);
     });
 
     // Server warnings
@@ -52,7 +57,15 @@ module.exports = function(RED) {
       self.warn(msg, obj);
     });
 
-    hueServerList[self.id] = self;
+    // Initialize server
+    this.lightServer.init((err) => {
+      if (err) {
+        self.error(err.message, err.stack);
+        return;
+      }
+
+      hueServerList[self.id] = self;
+    });
   }
 
   RED.nodes.registerType("node-hue-bridge", LightServerWrapper);
@@ -114,10 +127,12 @@ module.exports = function(RED) {
       return res.status(500).send("Server not found or not activated");
     }
 
+
     // Query server for information
     var server = hueServerList[req.query.server];
     res.set({'content-type': 'application/json; charset=utf-8'});
     res.end(JSON.stringify(server.getLights()));
+
     return;
   });
 }

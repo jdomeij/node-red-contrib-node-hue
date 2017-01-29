@@ -14,10 +14,10 @@
     <label for="node-config-input-key"><i class="fa fa-key"></i> API key</label>
     <div style="display: inline-block; position: relative; width: 70%; height: 20px;">
       <div style="position: absolute; left: 0px; right: 40px;">
-        <input type="text" id="node-config-input-key" placeholder="API Key" style="width: 100%;">
+        <input type="text" id="node-config-input-key" placeholder="Click button to register user" style="width: 100%;">
       </div>
-      <a id="node-input-lookup-key" title="Get/Test API key" class="editor-button" style="position: absolute; right: 0px; top: 0px;">
-        <i class="fa fa-user-o"></i>
+      <a id="node-input-lookup-key" title="Register User" class="editor-button" style="position: absolute; right: 0px; top: 0px;">
+        <i class="fa fa-user-circle-o"></i>
       </a>
     </div>
   </div>
@@ -34,10 +34,10 @@
 <script type="text/x-red" data-help-name="node-hue-bridge">
   <p>Server managing communication with Philips Hue bridge.</p>
   <ul>
-    <li><b>address</b> Hue bridge address</li>
-    <li><b>key</b> Hue bridge authorization key</li>
-    <li><b>interval</b> Interval that is used to poll lights for changes (min 500ms)</li>
-    <li><b>name</b> Server name</li>
+    <li><b>Host</b> Hue bridge address</li>
+    <li><b>API key</b> Hue bridge authorization key, enter key manually or press button to retreive key from bridge. The button can also be used to validate provided key</li>
+    <li><b>Poll interval</b> Interval that is used to poll lights for changes (min 500ms)</li>
+    <li><b>Name</b> Node name</li>
   </ul>
 </script>
 
@@ -49,8 +49,8 @@
     category: 'config',
     defaults: {
       name:    { value: 'Hue Bridge',  required: true },
-      address: { value: null,          required: true },
-      key:     { value: null,          required: true },
+      address: { required: true },
+      key:     { required: true },
       interval: {
         value: 10000,
         required: true,
@@ -98,6 +98,11 @@
             // Do we have an value, check if value match any existing and if not add it as unknown entry
             if (typeof val === 'string' && val.length && serverList.find(findFunc) === undefined) {
               input.prepend($('<option/>').val(val).text('Unknown "'+val+'"'));
+            }
+
+            // If nothing is provided, select first item in list
+            if ((typeof val !== 'string' || !val.length) && serverList.length > 0) {
+              val = serverList[0].ipaddress;
             }
 
             // Select current value
