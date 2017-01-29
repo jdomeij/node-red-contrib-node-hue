@@ -4,10 +4,30 @@ An solution to control Philips Hue lights using Node-Red, uses [node-hue-api lib
 This module provides input and output nodes for communicating with Philips Hue lights, the input node accepts multiple color format and automatically converts the values to the right format. 
 
 ### Features
+* Control both groups and individual lights.
 * Convert input arguments to light specific arguments
 * Trigger events for light changes
 * Self syncing, uses background polling to detect external changes to light
-* Displays current state for light in Node-Red ui
+* Displays current state for light in the Node-Red ui
+
+### Examples
+##### Dashboard example config:
+This is an example of how to control the light using the [node-red-dashboard](https://github.com/node-red/node-red-dashboard)
+The split node is used to get the `on` and `bri` payload from the light status message, and the join is used to combine the topic and value to an JSON object.
+
+![UI example](./doc/example_ui.png)
+
+##### Wakeup example config:
+Simple example of using an inject node to trigger an wakeup light behavior every workday, the light transitions from off to on with 75% brightness over an duration of 30s.
+
+![Wakeup example](./doc/wakeup.png)
+
+##### Hub Configuration
+![Hub config](./doc/config_server.png)
+
+##### Light Configuration
+![Light config](./doc/config_light.png)
+
 
 ### Input node
 The light is controlled by sending message with an payload containing the new state
@@ -28,6 +48,8 @@ More advanced way to control the light is to send an object payload with one or 
 | `red`, `green` and/or `blue` | Set one or more color channel for light (0-255)|
 | `hex` | Set color (#f49242) |
 | `hue` | Set color hue (0-360) |
+| `xy` | Set XY color (array with 0.0-1.0 values) |
+| `x` and/or `y`| Set XY color (0.0-1.0) |
 | `sat` or `saturation` | Set color saturation (0-100) | 
 | `bri` or `brightness` | Set light brightness (0-100%) |
 | `cr`, `mired` or `mirek` | Set Mired color temperature (153 - 500) |
