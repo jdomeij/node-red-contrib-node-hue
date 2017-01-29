@@ -76,7 +76,7 @@ module.exports = function(RED) {
       res.set({'content-type': 'application/json; charset=utf-8'});
       res.end(JSON.stringify(result));
     }).fail((err) => {
-      res.status(500).send(err.message + '"');
+      res.status(500).send(err.message);
     }).done();
   });
 

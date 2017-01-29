@@ -3,6 +3,7 @@ An solution to control Philips Hue lights using Node-Red, uses [node-hue-api lib
 
 This module provides input and output nodes for communicating with Philips Hue lights, the input node accepts multiple color format and automatically converts the values to the right format. 
 
+
 ### Features
 * Control both groups and individual lights.
 * Convert input arguments to light specific arguments
@@ -12,6 +13,7 @@ This module provides input and output nodes for communicating with Philips Hue l
 
 #### TODO
 * The HSV to XY (and back) color conversion is not 100% correct, modifying only one color channel at a time does not produce correct result.
+
 
 ### Examples
 ##### Dashboard example config:
@@ -70,6 +72,7 @@ Example: Sending the following to the light will turn it on and dim it upp to 77
   }
 }
 ```
+
 
 ### Output node
 
