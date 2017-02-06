@@ -6,13 +6,13 @@ This module provides input and output nodes for communicating with Philips Hue l
 
 ### Features
 * Control both groups and individual lights.
-* Convert input arguments to light specific arguments
+* Handles automatic conversion of rgb/hsv/hex/xy/.. color space to light specific color space
 * Trigger events for light changes
 * Self syncing, uses background polling to detect external changes to light
 * Displays current state for light in the Node-Red ui
 
 #### TODO
-* The HSV to XY (and back) color conversion is not 100% correct, modifying only one color channel at a time does not produce correct result.
+* The HSV to XY (and back) color conversion is not 100% correct, modifying single color channel at a time can produce strange results.
 
 
 ### Examples

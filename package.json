@@ -26,7 +26,11 @@
   },
   "main": "lib/hue-server.js",
   "license": "Apache-2.0",
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-spies": "^0.7.1",
+    "mocha": "^3.2.0"
+  },
   "dependencies": {
     "color-convert": "^1.9.0",
     "color-space": "^1.14.7",
@@ -34,5 +38,8 @@
     "enum": "^2.4.0",
     "lodash": "^4.17.4",
     "node-hue-api": "^2.4.1"
+  },
+  "scripts": {
+    "test": "mocha test"
   }
 }
