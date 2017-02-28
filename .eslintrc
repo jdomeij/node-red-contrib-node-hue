@@ -1,4 +1,5 @@
 {
+  "root": true,
   "extends": "eslint:recommended",
   "env": {
     "browser": false,
@@ -14,6 +15,7 @@
   },
 
   "rules": {
+    "brace-style": [ 1, "stroustrup"],
     "no-unused-vars": 1,
     "no-console": 1,
     "valid-jsdoc": [ 1, { 

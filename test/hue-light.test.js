@@ -4,10 +4,10 @@
 var HueLight = require('../lib/hue-light.js');
 var _ = require('lodash');
 
-var chai = require('chai');
-var chaiSpes = require('chai-spies');
+var chai      = require('chai');
+var chaiSpies = require('chai-spies');
 
-chai.use(chaiSpes);
+chai.use(chaiSpies);
 
 var expect = chai.expect;
 
@@ -60,6 +60,15 @@ describe('Hue-Light', () => {
     });
     afterEach(() => {
       lightItem = null;
+    });
+
+
+    it('Chagne colormode', (done) => {
+      var newInfo = _.extend({}, defaultLightInfo);
+      newInfo.state.colormode = 'ct';
+      newInfo.state.xy = [0.7, 0.7];
+      lightItem.updateInfo(newInfo);
+      done();
     });
 
     it('Invalid inputs', (done) => {

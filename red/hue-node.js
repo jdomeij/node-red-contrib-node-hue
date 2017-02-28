@@ -32,7 +32,8 @@ module.exports = function(RED, isOutput) {
     // Get light handler for this lightID
     try {
       this.lightHandler = node.server.getLightHandler(node.lightID)
-    } catch(e) {
+    }
+    catch(e) {
       node.error(e.message, e.stack);
     }
 
@@ -46,9 +47,11 @@ module.exports = function(RED, isOutput) {
         ;
       else if (!data.payload.reachable) {
         node.status( { fill:"red", shape:"ring", text:"disconnected" } );
-      } else if (!data.payload.on) {
+      }
+      else if (!data.payload.on) {
         node.status( { fill:"grey", shape:"dot", text:"off" } );
-      } else {
+      }
+      else {
         node.status( { fill:"yellow", shape:"dot", text: `on (${data.payload.bri}%)` } );
       }
 
@@ -64,7 +67,8 @@ module.exports = function(RED, isOutput) {
         message.event = 'new';
         node.lightMessageHandler(message);
       }
-    } catch (e) {
+    }
+    catch (e) {
       node.error(e.message, e.stack);
     }
 
@@ -85,7 +89,8 @@ module.exports = function(RED, isOutput) {
       if (!node.isOutput && node.lightHandler) {
         try {
           node.lightHandler.setLightState(msg.payload);
-        } catch (e) {
+        }
+        catch (e) {
           node.err(e.message, e.stack);
         }
       }

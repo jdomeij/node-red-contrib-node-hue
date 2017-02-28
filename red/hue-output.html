@@ -81,8 +81,12 @@
         if (serverConfig && serverConfig.id) {
           $.getJSON('node-hue/lights', { server: serverConfig.id } )
             .done(function(data) {
-              function findFunc(light) { return (light.id === val);}
-              function sortFunc(a, b) { return (a.hueID).localeCompare((b.hueID), { numeric: true}); }
+              function findFunc(light) {
+                return (light.id === val);
+              }
+              function sortFunc(a, b) {
+                return (a.hueID).localeCompare((b.hueID), { numeric: true});
+              }
 
               // No data returned
               if (data == null || data.lights == null || data.groups == null ||
@@ -153,7 +157,8 @@
       $('#node-input-lookup-lights').click( function() {
         if ($(htmlID).attr('type') === 'text') {
           enableCombobox();
-        } else {
+        }
+        else {
           enableTextbox();
         }
       });

@@ -73,7 +73,9 @@
 
         $.getJSON('node-hue/nupnp')
           .done(function(serverList) {
-            function findFunc(server) { return (server.ipaddress === val);}
+            function findFunc(server) {
+              return (server.ipaddress === val);
+            }
 
             // No data returned
             if (serverList == null || serverList.length === 0) {
@@ -129,7 +131,8 @@
       $('#node-input-lookup-address').click( function() {
         if ($(htmlAddressID).attr('type') === 'text') {
           enableAddressCombobox();
-        } else {
+        }
+        else {
           enableAddressTextbox();
         }
       });

@@ -30,7 +30,8 @@ module.exports = function(RED) {
     // Create server
     try {
       this.lightServer = new LightServer(config);
-    } catch (e) {
+    }
+    catch (e) {
       self.error(e.message, e.stack);
       return;
     }
