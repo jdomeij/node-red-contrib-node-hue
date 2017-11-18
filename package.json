@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-node-hue",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Control Philips HUE lights using Node-RED.",
   "author": "jdomeij",
   "homepage": "https://github.com/jdomeij/node-red-contrib-node-hue",
@@ -27,15 +27,15 @@
   "main": "lib/hue-server.js",
   "license": "Apache-2.0",
   "devDependencies": {
-    "chai": "^3.5.0",
+    "chai": "^4.1.0",
     "chai-spies": "^0.7.1",
-    "mocha": "^3.2.0"
+    "mocha": "^4.0.0"
   },
   "dependencies": {
-    "color-convert": "^1.9.0",
-    "color-space": "^1.14.7",
+    "color-convert": "^1.9.1",
+    "color-space": "^1.15.0",
     "color-temp": "0.0.2",
-    "enum": "^2.4.0",
+    "enum": "^2.5.0",
     "lodash": "^4.17.4",
     "node-hue-api": "^2.4.1"
   },

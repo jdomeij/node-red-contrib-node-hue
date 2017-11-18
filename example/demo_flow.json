@@ -1,0 +1,147 @@
+[
+    {
+        "id": "57a452aa.ade65c",
+        "type": "tab",
+        "label": "Demo Flow",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "ceff5ad2.50792",
+        "type": "node-hue-out",
+        "z": "57a452aa.ade65c",
+        "server": "b810cdbf.1bd968",
+        "lightID": "light4",
+        "name": "Livingroom",
+        "x": 200,
+        "y": 360,
+        "wires": [
+            [
+                "dea39240.8b05"
+            ]
+        ]
+    },
+    {
+        "id": "cea4a354.413c18",
+        "type": "ui_switch",
+        "z": "57a452aa.ade65c",
+        "name": "OnOff",
+        "label": "On",
+        "group": "ca3a2a31.531c38",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "topic": "on",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "x": 490,
+        "y": 340,
+        "wires": [
+            [
+                "2071c18b.0d1bbe"
+            ]
+        ]
+    },
+    {
+        "id": "dea39240.8b05",
+        "type": "function",
+        "z": "57a452aa.ade65c",
+        "name": "split",
+        "func": "var retVal = [\n    null, null\n];\n\nif (msg.payload !== undefined)\n  msg = msg.payload;\n\nif (msg.on !== undefined)\n  retVal[0] = { payload: msg.on };\n\nif (msg.bri !== undefined)\n  retVal[1] = { payload: msg.bri };\n\nreturn retVal",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 350,
+        "y": 360,
+        "wires": [
+            [
+                "cea4a354.413c18"
+            ],
+            [
+                "d239030d.d9b258"
+            ]
+        ]
+    },
+    {
+        "id": "2071c18b.0d1bbe",
+        "type": "function",
+        "z": "57a452aa.ade65c",
+        "name": "join",
+        "func": "var retVal = {\n    payload: {\n        delay: 1000\n    }\n};\n\nretVal.payload[msg.topic] = msg.payload;\n\nreturn retVal;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 670,
+        "y": 360,
+        "wires": [
+            [
+                "ca95e013.c57d28"
+            ]
+        ]
+    },
+    {
+        "id": "d239030d.d9b258",
+        "type": "ui_slider",
+        "z": "57a452aa.ade65c",
+        "name": "Brightness",
+        "label": "Bri",
+        "group": "ca3a2a31.531c38",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "passthru": false,
+        "topic": "bri",
+        "min": "0",
+        "max": "100",
+        "step": "1",
+        "x": 510,
+        "y": 380,
+        "wires": [
+            [
+                "2071c18b.0d1bbe"
+            ]
+        ]
+    },
+    {
+        "id": "ca95e013.c57d28",
+        "type": "node-hue-in",
+        "z": "57a452aa.ade65c",
+        "server": "b810cdbf.1bd968",
+        "lightID": "light4",
+        "name": "Livingroom",
+        "x": 830,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "b810cdbf.1bd968",
+        "type": "node-hue-bridge",
+        "z": "",
+        "name": "Hue Bridge",
+        "address": "10.3.1.100",
+        "key": "SavZEXKeKsN38KpPYNp3ytLOT3iaFF67cCcesFIR",
+        "interval": "22000"
+    },
+    {
+        "id": "ca3a2a31.531c38",
+        "type": "ui_group",
+        "z": "",
+        "name": "Demo",
+        "tab": "5fec385e.fdd2a",
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "5fec385e.fdd2a",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Demo",
+        "icon": "dashboard"
+    }
+]

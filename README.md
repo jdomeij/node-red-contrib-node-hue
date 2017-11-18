@@ -60,6 +60,8 @@ More advanced way to control the light is to send an object payload with one or 
 | `cr`, `mired` or `mirek` | Set Mired color temperature (153 - 500) |
 | `kelvin` | Set kelvin color temperature (2200-6500) |
 | `duration` | Transition time (ms) |
+| `alert` | Alert effect ('none', 'select' or 'lselect') |
+| `effect` | Dynamic effect ('none' or 'colorloop') |
 
 Example: Sending the following to the light will turn it on and dim it upp to 77% over 10 seconds
 

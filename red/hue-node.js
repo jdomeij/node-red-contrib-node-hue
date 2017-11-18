@@ -91,7 +91,7 @@ module.exports = function(RED, isOutput) {
           node.lightHandler.setLightState(msg.payload);
         }
         catch (e) {
-          node.err(e.message, e.stack);
+          node.error(e.message, e.stack);
         }
       }
     });

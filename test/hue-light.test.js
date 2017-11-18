@@ -63,18 +63,27 @@ describe('Hue-Light', () => {
     });
 
 
-    it('Chagne colormode', (done) => {
+    it('Change colormode', (done) => {
       var newInfo = _.extend({}, defaultLightInfo);
       newInfo.state.colormode = 'ct';
       newInfo.state.xy = [0.7, 0.7];
+
+      lightItem.modified = 0;
       lightItem.updateInfo(newInfo);
       done();
     });
 
     it('Invalid inputs', (done) => {
+      lightItem.modified = 0;
       lightItem.updateInfo(null);
+
+      lightItem.modified = 0;
       lightItem.updateInfo();
+
+      lightItem.modified = 0;
       lightItem.updateInfo(123);
+
+      lightItem.modified = 0;
       lightItem.updateInfo("asdfa");
       done();
     });
@@ -623,4 +632,103 @@ describe('Hue-Light', () => {
 
   });
 
+  describe('setColor', () => {
+    it('alert; lselect', (done) => {
+      var lightItem = new HueLight(defaultID, defaultLightInfo, true);
+
+      var newState = {};
+      lightItem.on('sendToLight', (hueId, newLightState) => {
+        newState = newLightState;
+      });
+
+      lightItem.setColor({
+        alert: 'lselect'
+      });
+
+      expect(newState._values.alert).to.equal('lselect');
+      done();
+    });
+
+    it('alert: false', (done) => {
+      var lightItem = new HueLight(defaultID, defaultLightInfo, true);
+
+      var newState = {};
+      lightItem.on('sendToLight', (hueId, newLightState) => {
+        newState = newLightState;
+      });
+
+      lightItem.setColor({
+        alert: false
+      });
+
+      expect(newState._values.alert).to.equal('none');
+      done();
+    });
+  });
+
+  describe('Compability', () => {
+    it('Osram lightify plug', (done) => {
+      const lightInfo = {
+        "state": {
+          "on": false,
+          "alert": "none",
+          "reachable": true
+        },
+      };
+
+
+      // New light
+      var lightItem = new HueLight(defaultID, lightInfo, true);
+      var newState = {};
+      lightItem.on('sendToLight', (hueId, newLightState) => {
+        newState = newLightState;
+      });
+
+      expect(lightItem.id).to.equal(defaultID);
+      expect(lightItem.state.on).to.equal(false);
+      expect(lightItem.state.bri).to.equal(0);
+
+
+      // Update color
+      newState = {};
+      lightItem.setColor({
+        'on': true,
+        'bri': 55,
+      });
+
+      expect(newState._values.on).to.equal(true);
+      expect(lightItem.state.on).to.equal(true);
+
+      // Poll update
+      newState = {};
+      lightItem.modified = 0;
+      lightItem.updateInfo({
+        "state": {
+          "on": true,
+          "alert": "none",
+          "reachable": true
+        }
+      });
+
+      expect(lightItem.state.on).to.equal(true);
+      expect(lightItem.state.bri).to.equal(0);
+
+
+      // Poll update
+      newState = {};
+      lightItem.modified = 0;
+      lightItem.updateInfo({
+        "state": {
+          "on": false,
+          "alert": "none",
+          "reachable": true
+        }
+      });
+
+      expect(lightItem.state.on).to.equal(false);
+      expect(lightItem.state.bri).to.equal(0);
+
+      done();
+    });
+  });
 });
