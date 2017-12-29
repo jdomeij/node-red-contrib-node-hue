@@ -24,12 +24,20 @@ module.exports = function(RED) {
       name:     config.name,
       key:      config.key,
       address:  config.address,
+      port:     80,
       interval: config.interval,
     };
 
+    // Split address and port
+    var regex = /^(.*):(\d+)$/.exec(self.config.address);
+    if (regex) {
+      self.config.address = regex[1];
+      self.config.port = parseInt(regex[2], 10);
+    }
+
     // Create server
     try {
-      this.lightServer = new LightServer(config);
+      this.lightServer = new LightServer(self.config);
     }
     catch (e) {
       self.error(e.message, e.stack);
@@ -103,7 +111,17 @@ module.exports = function(RED) {
       return res.status(500).send("Missing arguments");
     }
 
-    var hue = new nodeHueApi.HueApi(req.query.address, req.query.key);
+    var address = req.query.address;
+    var port = 80;
+
+    // Split address and port
+    var regex = /^(.*):(\d+)$/.exec(req.query.address);
+    if (regex) {
+      address = regex[1];
+      port = parseInt(regex[2], 10);
+    }
+
+    var hue = new nodeHueApi.HueApi(address, req.query.key, 2000, port);
     hue.config()
       .then((result) => {
         // Check if result has ipaddress
