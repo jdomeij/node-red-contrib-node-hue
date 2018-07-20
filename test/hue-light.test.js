@@ -114,13 +114,13 @@ describe('Hue-Light', () => {
       var tmp;
       tmp = lightItem.parseColorRGB({'hex': '#ff0000'}, output);
 
-      console.log(output);
+      //console.log(output);
 
       expect(tmp).to.equal(true);
       expect(output).to.be.an('object');
       expect(output.hue).to.equal(0);
       expect(output.sat).to.equal(0xFF);
-      expect(output.bri).to.equal(0xFF);
+      expect(output.bri).to.equal(0xFE);
 
       done();
     });
@@ -134,7 +134,7 @@ describe('Hue-Light', () => {
       expect(output).to.be.an('object');
       expect(output.hue).to.closeTo((120/359) * 0xFFFF, 5);
       expect(output.sat).to.equal(0xFF);
-      expect(output.bri).to.equal(0xFF);
+      expect(output.bri).to.equal(0xFE);
 
       done();
     });
@@ -148,7 +148,7 @@ describe('Hue-Light', () => {
       expect(output).to.be.an('object');
       expect(output.hue).to.closeTo((240/359) * 0xFFFF, 5);
       expect(output.sat).to.equal(0xFF);
-      expect(output.bri).to.equal(0xFF);
+      expect(output.bri).to.equal(0xFE);
 
       done();
     });
@@ -162,7 +162,7 @@ describe('Hue-Light', () => {
       expect(output).to.be.an('object');
       expect(output.hue).to.equal(0);
       expect(output.sat).to.equal(0xFF);
-      expect(output.bri).to.equal(0xFF);
+      expect(output.bri).to.equal(0xFE);
 
       done();
     });
@@ -176,7 +176,7 @@ describe('Hue-Light', () => {
       expect(output).to.be.an('object');
       expect(output.hue).to.equal(0);
       expect(output.sat).to.equal(0xFF);
-      expect(output.bri).to.equal(0xFF);
+      expect(output.bri).to.equal(0xFE);
       done();
     });
 
@@ -189,7 +189,7 @@ describe('Hue-Light', () => {
       expect(output).to.be.an('object');
       expect(output.hue).to.equal(0);
       expect(output.sat).to.equal(0xFF);
-      expect(output.bri).to.equal(0xFF);
+      expect(output.bri).to.equal(0xFE);
       done();
     });
 
@@ -202,7 +202,7 @@ describe('Hue-Light', () => {
       expect(output).to.be.an('object');
       expect(output.hue).to.equal(0);
       expect(output.sat).to.equal(0xFF);
-      expect(output.bri).to.equal(0xFF);
+      expect(output.bri).to.equal(0xFE);
       done();
     });
 
@@ -235,7 +235,7 @@ describe('Hue-Light', () => {
       else
         expect(((output.hue/0xFFFF)*359) - 360).to.closeTo(0, 5);
       expect(output.sat).to.equal(0xFF);
-      expect(output.bri).to.equal(0xFF);
+      expect(output.bri).to.equal(0xFE);
       done();
     });
   });
@@ -270,7 +270,7 @@ describe('Hue-Light', () => {
       expect(output.xy).to.be.an('array');
       expect(output.xy[0]).to.closeTo(0.7, 0.05);
       expect(output.xy[1]).to.closeTo(0.3, 0.05);
-      expect(output.bri).to.equal(0xFF);
+      expect(output.bri).to.equal(0xFE);
 
       done();
     });
@@ -285,7 +285,7 @@ describe('Hue-Light', () => {
       expect(output.xy).to.be.an('array');
       expect(output.xy[0]).to.closeTo(0.7, 0.05);
       expect(output.xy[1]).to.closeTo(0.3, 0.05);
-      expect(output.bri).to.equal(0xFF);
+      expect(output.bri).to.equal(0xFE);
 
       done();
     });
@@ -302,7 +302,7 @@ describe('Hue-Light', () => {
       expect(output.xy).to.be.an('array');
       expect(output.xy[0]).to.closeTo(0.138, 0.05);
       expect(output.xy[1]).to.closeTo(0.08, 0.05);
-      expect(output.bri).to.equal(0xFF);
+      expect(output.bri).to.equal(0xFE);
 
       done();
     });
@@ -524,7 +524,7 @@ describe('Hue-Light', () => {
       var customInfo = _.extend({}, defaultLightInfo, {
         state: {
           "on": true,
-          "bri": 0xFF,
+          "bri": 0xFE,
           "hue": 0,
           "sat": 0xFF,
         }
@@ -551,12 +551,79 @@ describe('Hue-Light', () => {
       
       expect(lightItem.state.hue).to.equal(0);
       expect(lightItem.state.sat).to.equal(0xFF);
-      expect(lightItem.state.bri).to.equal(0xFF);
+      expect(lightItem.state.bri).to.equal(0xFE);
       done();
     });
 
-  });
+    it('{ on: "toggle" } -> Off', (done) => {
+      // Create light with only HS support
+      var customInfo = _.extend({}, defaultLightInfo, {
+        state: {
+          "on": true,
+          "bri": 0xFE,
+          "hue": 0,
+          "sat": 0xFF,
+        }
+      });
 
+      var lightItem = new HueLight(defaultID, customInfo, true);
+
+      var spySendToLight = chai.spy();
+      var spyError       = chai.spy();
+      var spyWarning     = chai.spy();
+      var spyChange      = chai.spy();
+
+      lightItem.on('sendToLight', spySendToLight);
+      lightItem.on('error', spyError);
+      lightItem.on('warning', spyWarning);
+      lightItem.on('change', spyChange);
+
+      lightItem.setColor({on:'toggle'});
+
+      expect(spySendToLight).to.have.been.called();
+      expect(spyError).to.not.have.been.called();
+      expect(spyWarning).to.not.have.been.called();
+      expect(spyChange).to.have.been.called();
+      
+      expect(lightItem.state.on).to.equal(false);
+      done();
+    });
+
+    it('{ on: "toggle" } -> On', (done) => {
+      // Create light with only HS support
+      var customInfo = _.extend({}, defaultLightInfo, {
+        state: {
+          "on": false,
+          "bri": 0,
+        }
+      });
+
+      var lightItem = new HueLight(defaultID, customInfo, true);
+
+      var spySendToLight = chai.spy();
+      var spyError       = chai.spy();
+      var spyWarning     = chai.spy();
+      var spyChange      = chai.spy();
+
+      lightItem.on('sendToLight', spySendToLight);
+      lightItem.on('error', spyError);
+      lightItem.on('warning', spyWarning);
+      lightItem.on('change', spyChange);
+
+      lightItem.setColor({on:'toggle', bri: 100});
+
+      expect(spySendToLight).to.have.been.called();
+      expect(spyError).to.not.have.been.called();
+      expect(spyWarning).to.not.have.been.called();
+      expect(spyChange).to.have.been.called();
+      
+      expect(lightItem.state.on).to.equal(true);
+      expect(lightItem.state.bri).to.equal(0xfe);
+      done();
+    });
+
+
+  });
 
   describe('setColor (Update check)', () => {
 
@@ -565,7 +632,7 @@ describe('Hue-Light', () => {
       var customInfo = _.extend({}, defaultLightInfo, {
         state: {
           "on": true,
-          "bri": 0xFF,
+          "bri": 0xFE,
           "hue": 0,
           "sat": 0xFF,
         }
@@ -650,7 +717,7 @@ describe('Hue-Light', () => {
       var lightItem = new HueLight(defaultID, _.extend({}, defaultLightInfo, {
         state: {
           'on': true,
-          'bri': 0xFF,
+          'bri': 0xFE,
           'hue': 0,
           'sat': 0xFF,
         }
@@ -667,7 +734,7 @@ describe('Hue-Light', () => {
       var lightItem = new HueLight(defaultID, _.extend({}, defaultLightInfo, {
         state: {
           'on': true,
-          'bri': 0xFF,
+          'bri': 0xFE,
           'xy': [.7, .3]
         }
       }), true);
@@ -683,7 +750,7 @@ describe('Hue-Light', () => {
       var lightItem = new HueLight(defaultID, _.extend({}, defaultLightInfo, {
         state: {
           'on': true,
-          'bri': 0xFF,
+          'bri': 0xFE,
           'ct': 300
         }
       }), true);
@@ -763,7 +830,9 @@ describe('Hue-Light', () => {
       expect(spySendToLight).to.not.have.been.called();
 
       // Clear spy
-      spySendToLight.reset();
+      lightItem.removeListener('sendToLight', spySendToLight);
+      spySendToLight = chai.spy();
+      lightItem.on('sendToLight', spySendToLight);
 
       // Update color
       lightItem.setColor({
@@ -776,7 +845,9 @@ describe('Hue-Light', () => {
       expect(spySendToLight).to.have.been.called();
 
       // Clear spy and reset last modified
-      spySendToLight.reset();
+      lightItem.removeListener('sendToLight', spySendToLight);
+      spySendToLight = chai.spy();
+      lightItem.on('sendToLight', spySendToLight);
       lightItem.modified = 0;
 
       // Poll update
@@ -793,7 +864,9 @@ describe('Hue-Light', () => {
 
 
       // Clear spy and reset last modified
-      spySendToLight.reset();
+      lightItem.removeListener('sendToLight', spySendToLight);
+      spySendToLight = chai.spy();
+      lightItem.on('sendToLight', spySendToLight);
       lightItem.modified = 0;
 
       // Poll update

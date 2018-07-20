@@ -57,7 +57,7 @@ More advanced way to control the light is to send an object payload with one or 
 | `x` and/or `y`| Set XY color (0.0-1.0) |
 | `sat` or `saturation` | Set color saturation (0-100) | 
 | `bri` or `brightness` | Set light brightness (0-100%) |
-| `cr`, `mired` or `mirek` | Set Mired color temperature (153 - 500) |
+| `ct`, `mired` or `mirek` | Set Mired color temperature (153 - 500) |
 | `kelvin` | Set kelvin color temperature (2200-6500) |
 | `duration` | Transition time (ms) |
 | `alert` | Alert effect ('none', 'select' or 'lselect') |
